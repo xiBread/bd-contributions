@@ -32,7 +32,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.1.0","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/BetterCodeblocks","github_raw":"https://github.com/vBread/BetterCodeblocks/blob/master/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Improvements","type":"improved","items":["Updated settings UI","Added support to more HLJS classes","Internal optimizations"]}],"main":"index.js"};
+    const config = {"info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.1.1","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/BetterCodeblocks","github_raw":"https://github.com/vBread/BetterCodeblocks/blob/master/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Improvements","type":"improved","items":["Updated settings UI","Added support to more HLJS classes","Internal optimizations"]},{"title":"Fix","type":"fixed","items":["Fixed incorrect default value"]}],"main":"index.js"};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}
@@ -227,7 +227,7 @@ module.exports = (() => {
 			const pickers = []
 
 			for (const [title, desc, key] of data) {
-				pickers.push(new ColorPicker(title, `${desc}. Default: ${this.hljs[key]}`, this.hljs[key], (color) => this.updateColor(key, color)))
+				pickers.push(new ColorPicker(title, `${desc}. Default: ${this.defaults[key]}`, this.hljs[key], (color) => this.updateColor(key, color)))
 			}
 
 			return pickers
