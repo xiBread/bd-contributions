@@ -32,311 +32,360 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.1.2","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/BetterCodeblocks","github_raw":"https://github.com/vBread/BetterCodeblocks/blob/master/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Fix","type":"fixed","items":["Make the copy text visible on light theme"]}],"main":"index.js"};
+	const config = { "main": "index.js", "info": { "name": "BetterCodeblocks", "authors": [{ "name": "Bread", "discord_id": "304260051915374603", "github_username": "vBread" }], "version": "1.2.0", "description": "Enhances the look and feel of Discord's codeblocks with customizable colors", "github": "https://github.com/vBread/BetterCodeblocks", "github_raw": "https://github.com/vBread/BetterCodeblocks/blob/master/BetterCodeblocks.plugin.js" }, "changelog": [{ "title": "Features", "type": "improved", "items": ["Added ability to upload a custom theme", "More internal optimizations"] }] };
 
-    return !global.ZeresPluginLibrary ? class {
-        constructor() {this._config = config;}
-        getName() {return config.info.name;}
-        getAuthor() {return config.info.authors.map(a => a.name).join(", ");}
-        getDescription() {return config.info.description;}
-        getVersion() {return config.info.version;}
-        load() {
-            BdApi.showConfirmationModal("Library Missing", `The library plugin needed for ${config.info.name} is missing. Please click Download Now to install it.`, {
-                confirmText: "Download Now",
-                cancelText: "Cancel",
-                onConfirm: () => {
-                    require("request").get("https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js", async (error, response, body) => {
-                        if (error) return require("electron").shell.openExternal("https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js");
-                        await new Promise(r => require("fs").writeFile(require("path").join(BdApi.Plugins.folder, "0PluginLibrary.plugin.js"), body, r));
-                    });
-                }
-            });
-        }
-        start() {}
-        stop() {}
-    } : (([Plugin, Api]) => {
-        const plugin = (Plugin, Library) => {
-	const { Patcher, WebpackModules, DiscordModules, PluginUtilities, Settings } = Library;
-	const { SettingPanel, SettingGroup, ColorPicker } = Settings
-	const { React, hljs } = DiscordModules
-
-	const colors = {
-		purple: '#C678DD',
-		beige: '#E6C07B',
-		red: '#E06C75',
-		gold: '#FFBA79',
-		blue: '#61AEEE',
-		gray: '#5C6370',
-		mint: '#AFD485',
-		smoke: '#BBBBBB'
-	}
-
-	return class BetterCodeblocks extends Plugin {
-		constructor() {
-			super()
-
-			this.defaults = {
-				// Main
-				text: colors.smoke,
-				background: '#282C34',
-
-				// General
-				keyword: colors.purple,
-				built_in: colors.beige,
-				type: colors.beige,
-				literal: colors.gold,
-				number: colors.gold,
-				operator: colors.purple,
-				punctuation: colors.smoke,
-				regexp: colors.gold,
-				string: colors.mint,
-				subst: colors.red,
-				symbol: colors.beige,
-				class: colors.blue,
-				function: colors.blue,
-				variable: colors.red,
-				title: colors.blue,
-				params: colors.red,
-				comment: colors.gray,
-				doctag: colors.purple,
-
-				// Meta
-				meta: colors.blue,
-				meta_keyword: colors.purple,
-				meta_string: colors.mint,
-
-				// Markdown
-				bullet: colors.red,
-				code: colors.smoke,
-				emphasis: colors.blue,
-				strong: colors.purple,
-				link: colors.red,
-				quote: colors.mint,
-
-				// CSS
-				selector_tag: colors.blue,
-				selector_id: colors.blue,
-				selector_class: colors.red,
-				selector_attr: colors.blue,
-				selector_pseudo: colors.beige,
-
-				// Misc
-				section: colors.red,
-				tag: colors.red,
-				name: colors.blue,
-				attr: colors.beige,
-				attribute: colors.red,
-				addition: '#2ECC71',
-				deletion: '#E74C3C'
-			}
-
-			this.hljs = PluginUtilities.loadSettings('BetterCodeblocks', this.defaults)
-		}
-
-		onStart() {
-			const parser = WebpackModules.getByProps('parse', 'parseTopic')
-
-			Patcher.after(parser.defaultRules.codeBlock, 'react', (_, args, res) => {
-				this.inject(args, res)
-
-				return res
+	return !global.ZeresPluginLibrary ? class {
+		constructor() { this._config = config; }
+		getName() { return config.info.name; }
+		getAuthor() { return config.info.authors.map(a => a.name).join(", "); }
+		getDescription() { return config.info.description; }
+		getVersion() { return config.info.version; }
+		load() {
+			BdApi.showConfirmationModal("Library Missing", `The library plugin needed for ${config.info.name} is missing. Please click Download Now to install it.`, {
+				confirmText: "Download Now",
+				cancelText: "Cancel",
+				onConfirm: () => {
+					require("request").get("https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js", async (error, response, body) => {
+						if (error) return require("electron").shell.openExternal("https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js");
+						await new Promise(r => require("fs").writeFile(require("path").join(BdApi.Plugins.folder, "0PluginLibrary.plugin.js"), body, r));
+					});
+				}
 			});
-
-			PluginUtilities.addStyle('BetterCodeblocks', this.css)
 		}
+		start() {}
+		stop() {}
+	} : (([Plugin, Api]) => {
+		const plugin = (Plugin, Library) => {
+			const { Patcher, WebpackModules, DiscordModules, PluginUtilities, Settings } = Library;
+			const { SettingGroup, ColorPicker, Textbox } = Settings
+			const { React } = DiscordModules
 
-		onStop() {
-			PluginUtilities.removeStyle('BetterCodeblocks')
-			Patcher.unpatchAll();
-		}
+			const https = require('https')
+			const path = require('path');
 
-		getSettingsPanel() {
-			return SettingPanel.build(() => {},
-				new SettingGroup('Customization').append(
-					new ColorPicker('Foreground', null, this.hljs.text, (color) => this.updateColor('text', color)),
-					new ColorPicker('Background', null, this.hljs.background, (color) => this.updateColor('background', color)),
-
-					new SettingGroup('General').append(
-						...this.createColorPickers([
-							['Keywords', 'Applies to keywords in a regular ALGOL-style language', 'keyword'],
-							['Built-Ins', 'Applies to built-in objects and/or library objects', 'built_in'],
-							['Types', 'Applies to syntactically significant types, excluding user-defined', 'type'],
-							['Literals', 'Applies to special identifiers for built-in values', 'literal'],
-							['Numbers', 'Applies to numbers, including units and modifiers (Not widely supported)', 'number'],
-							['Operators', 'Applies to logical and mathematical operators', 'operator'],
-							['Punctuation', 'Applies to auxillary punctuation (Not widely supported)', 'punctuation'],
-							['Regular Expressions', 'Applies to literal regular expressions', 'regexp'],
-							['Strings', 'Applies to literal strings/characters', 'string'],
-							['String Interpolation', 'Applies to parsed sections inside a literal string', 'subst'],
-							['Symbols', 'Applies to symbolic constants and interned strings', 'symbol'],
-							['Classes', 'Applies to class-level declarations', 'class'],
-							['Functions', 'Applies to function or method declarations', 'function'],
-							['Variables', 'Applies to variables declarations', 'variable'],
-							['Titles', 'Applies to other declarations', 'title'],
-							['Parameters', 'Applies to function arguments at the place of declaration', 'params'],
-							['Comments', 'Applies to line and block comments', 'comment'],
-							['Documentation Tags', 'Applies to documentation markup within comments', 'doctag']
-						])
-					),
-
-					new SettingGroup('Meta').append(
-						...this.createColorPickers([
-							['Meta', 'Applies to modifiers, annotations, preprocessor directives, etc.', 'meta'],
-							['Meta Keywords', 'Applies to keywords or built-ins within meta constructs', 'meta_keyword'],
-							['Meta Strings', 'Applies to strings within meta constructs', 'meta_string']
-						]),
-					),
-
-					new SettingGroup('Markdown').append(
-						...this.createColorPickers([
-							['Bullets', 'Applies to bullet points in an unordered list', 'bullet'],
-							['Code', 'Applies to code blocks', 'code'],
-							['Italics', 'Applies to italicized text', 'emphasis'],
-							['Bold', 'Applies to bold text', 'bold'],
-							['Links', 'Applies to hyperlinks', 'link'],
-							['Quotes', 'Applies to quotations or blockquotes', 'quote']
-						])
-					),
-
-					new SettingGroup('CSS').append(
-						...this.createColorPickers([
-							['Tags', 'Applies to tag selectors', 'selector_tag'],
-							['IDs (CSS)', 'Applies to ID selectors', 'selector_id'],
-							['Classes (CSS)', 'Applies to class selectors', 'selector_class'],
-							['Attributes', 'Applies to attribute selectors', 'selector_attr'],
-							['Pseudos (CSS)', 'Applies to pseudo selectors', 'selector_pseudo']
-						])
-					),
-
-					new SettingGroup('Misc').append(
-						...this.createColorPickers([
-							['Sections', 'Applies to headings of a section in a config file', 'section'],
-							['Tags', 'Applies to XML and HTML tags', 'tag'],
-							['Names', 'Applies to XML and HTML tag names and S-expressions', 'name'],
-							['Unspecified Attributes', 'Applies to names of an attribute with no language defined semantics and sub-attribute within another highlighted object', 'attr'],
-							['Attributes', 'Applies to names of an attribute followed by a structured value', 'attribute'],
-							['Additions', 'Applies to diff additions', 'addition'],
-							['Deletions', 'Applies to diff deletions', 'deletion']
-						])
-					)
-				)
-			)
-		}
-
-		createColorPickers(data) {
-			const pickers = []
-
-			for (const [title, desc, key] of data) {
-				pickers.push(new ColorPicker(title, `${desc}. Default: ${this.defaults[key]}`, this.hljs[key], (color) => this.updateColor(key, color)))
+			const defaults = {
+				hljs: {
+					additions: '#859900',
+					attributeSelectors: '#cb4b16',
+					attributes: '#b58900',
+					background: '#282c34',
+					bold: null,
+					builtIns: '#dc322f',
+					bulletPoints: '#cb4b16',
+					classSelectors: '#268bd2',
+					classes: '#b58900',
+					codeblocks: null,
+					comments: '#586e75',
+					deletions: '#dc322f',
+					documentationTags: '#2aa198',
+					foreground: '#839496',
+					headings: '#268bd2',
+					hyperlinks: '#cb4b16',
+					idSelectors: '#268bd2',
+					italics: null,
+					keywords: '#859900',
+					lineNumbers: null,
+					literals: '#2aa198',
+					meta: '#cb4b16',
+					metaStrings: '#2aa198',
+					metaKeywords: '#cb4b16',
+					names: '#268bd2',
+					numbers: '#2aa198',
+					operators: null,
+					parameters: null,
+					pseudoSelectors: '#cb4b16',
+					punctuation: null,
+					quotes: '#586e75',
+					regularExpressions: '#2aa198',
+					sections: '#268bd2',
+					stringInterpolation: '#cb4b16',
+					strings: '#2aa198',
+					symbols: '#cb4b16',
+					tags: null,
+					tagSelectors: '#859900',
+					titles: '#268bd2',
+					types: '#b58900',
+					unspecifiedAttributes: '#b58900',
+					variables: '#b58900',
+				},
+				theme: ''
 			}
 
-			return pickers
-		}
+			let settings = PluginUtilities.loadSettings('BetterCodeblocks', defaults)
 
-		updateColor(key, color) {
-			this.hljs[key] = color
-			this.save()
-		}
+			return class BetterCodeblocks extends Plugin {
+				onStart() {
+					const parser = WebpackModules.getByProps('parse', 'parseTopic')
 
-		save() {
-			PluginUtilities.saveSettings('BetterCodeblocks', this.hljs)
-			this.reload()
-		}
+					Patcher.after(parser.defaultRules.codeBlock, 'react', (_, args, res) => {
+						this.inject(args, res)
 
-		reload() {
-			PluginUtilities.removeStyle('BetterCodeblocks')
-			PluginUtilities.addStyle('BetterCodeblocks', this.css)
-		}
+						return res
+					});
 
-		inject(args, res) {
-			const render = res.props.render;
-
-			res.props.render = (properties) => {
-				const codeblock = render(properties);
-				const { props } = codeblock.props.children;
-
-				const classes = props.className.split(' ');
-				const language = args ? args[0].lang : classes[classes.indexOf('hljs') + 1];
-
-				const innerHTML = props.dangerouslySetInnerHTML
-				let lines;
-
-				if (innerHTML) {
-					lines = innerHTML.__html.replace(/<span class="(hljs-[a-z]+)">([^<]*)<\/span>/g, (_, className, code) => code
-						.split('\n')
-						.map((line) => `<span class="${className}">${line}</span>`)
-						.join('\n')
-					).split('\n')
-				} else {
-					lines = props.children.split('\n')
+					PluginUtilities.addStyle('BetterCodeblocks', this.css)
 				}
 
-				delete props.dangerouslySetInnerHTML;
-				props.children = this.render(language, lines);
+				onStop() {
+					PluginUtilities.removeStyle('BetterCodeblocks')
+					Patcher.unpatchAll();
+				}
 
-				return codeblock;
-			};
-		}
+				getSettingsPanel() {
+					const panel = document.createElement("form");
+					panel.classList.add("form");
+					panel.style.setProperty("width", "100%");
 
-		render(language, lines) {
-			const { Messages } = WebpackModules.getByProps('Messages')
+					new SettingGroup('Customization').appendTo(panel).append(
+						new SettingGroup('Main').append(
+							...this.createColorPickers([
+								['Foreground', 'Applies to any text without a style'],
+								['Background', 'Applies to the background of the codeblock'],
+								['Line Numbers', 'Applies to the line numbers']
+							])
+						),
 
-			if (hljs && typeof hljs.getLanguage === 'function') {
-				language = hljs.getLanguage(language);
-			}
+						new SettingGroup('General').append(
+							...this.createColorPickers([
+								['Keywords', 'Applies to keywords in a regular ALGOL-style language'],
+								['Built-Ins', 'Applies to built-in objects and/or library objects'],
+								['Types', 'Applies to syntactically significant types'],
+								['Literals', 'Applies to special identifiers for built-in values'],
+								['Numbers', 'Applies to numbers, including units and modifiers (Not widely supported)'],
+								['Operators', 'Applies to logical and mathematical operators'],
+								['Punctuation', 'Applies to auxillary punctuation (Not widely supported)'],
+								['Regular Expressions', 'Applies to literal regular expressions'],
+								['Strings', 'Applies to literal strings/characters'],
+								['String Interpolation', 'Applies to parsed sections inside a literal string'],
+								['Symbols', 'Applies to symbolic constants and interned strings'],
+								['Classes', 'Applies to class-level declarations'],
+								['Functions', 'Applies to function or method declarations'],
+								['Variables', 'Applies to variables declarations'],
+								['Titles', 'Applies to other declarations'],
+								['Parameters', 'Applies to function arguments at the place of declaration'],
+								['Comments', 'Applies to line and block comments'],
+								['Documentation Tags', 'Applies to documentation markup within comments']
+							])
+						),
 
-			return React.createElement(React.Fragment, null,
-				language && React.createElement('div', { className: 'bd-codeblock-language' }, language.name),
+						new SettingGroup('Meta').append(
+							...this.createColorPickers([
+								['Meta', 'Applies to modifiers, annotations, preprocessor directives, etc.'],
+								['Meta Keywords', 'Applies to keywords or built-ins within meta constructs'],
+								['Meta Strings', 'Applies to strings within meta constructs']
+							]),
+						),
 
-				React.createElement('table', { className: 'bd-codeblock-table' },
-					...lines.map((line, i) => React.createElement('tr', null,
-						React.createElement('td', null, i + 1),
-						React.createElement('td',
-							language ? {
-								dangerouslySetInnerHTML: {
-									__html: line
-								}
-							} : {
-								children: line
-							}
+						new SettingGroup('Markdown').append(
+							...this.createColorPickers([
+								['Bullet Points', 'Applies to bullet points in an unordered list'],
+								['Codeblocks', 'Applies to code blocks'],
+								['Italics', 'Applies to italicized text'],
+								['Bold', 'Applies to bold text'],
+								['Hyperlinks', 'Applies to hyperlinks'],
+								['Quotes', 'Applies to quotations or blockquotes'],
+								['Headings', 'Applies to headings']
+							])
+						),
+
+						new SettingGroup('CSS').append(
+							...this.createColorPickers([
+								['Tag Selectors', 'Applies to tag selectors'],
+								['ID Selectors', 'Applies to ID selectors'],
+								['Class Selectors', 'Applies to class selectors'],
+								['Attribute Selectors', 'Applies to attribute selectors'],
+								['Pseudo Selectors', 'Applies to pseudo selectors']
+							])
+						),
+
+						new SettingGroup('Misc').append(
+							...this.createColorPickers([
+								['Sections', 'Applies to headings of a section in a config file'],
+								['Tags', 'Applies to XML and HTML tags'],
+								['Names', 'Applies to XML and HTML tag names and S-expressions'],
+								['Unspecified Attributes', 'Applies to names of an attribute with no language defined semantics and sub-attribute within another highlighted object'],
+								['Attributes', 'Applies to names of an attribute followed by a structured value'],
+								['Additions', 'Applies to diff additions'],
+								['Deletions', 'Applies to diff deletions']
+							])
 						)
-					))
-				),
+					)
 
-				React.createElement('button', {
-					className: 'bd-codeblock-copy-btn',
-					onClick: this.clickHandler
-				}, Messages.COPY)
-			)
-		}
+					new SettingGroup('Themes').appendTo(panel).append(
+						new Textbox(
+							'Custom Theme',
+							'Paste a link to a raw JSON file.',
+							settings.theme,
+							this.readURL.bind(this)
+						)
+					)
 
-		clickHandler({ target }) {
-			const { Messages } = WebpackModules.getByProps('Messages')
-			const { clipboard } = require('electron')
+					const div = document.createElement('div')
+					div.innerHTML = '<a href="https://github.com/vBread/BetterCodeblocks/blob/master/UPLOADING.md">Uploading Guide</a>'
 
-			if (target.classList.contains('copied')) {
-				return void 0;
-			}
+					panel.appendChild(div)
 
-			target.innerText = Messages.ACCOUNT_USERNAME_COPY_SUCCESS_1;
-			target.classList.add('copied');
+					return panel
+				}
 
-			setTimeout(() => {
-				target.innerText = Messages.COPY;
-				target.classList.remove('copied');
-			}, 1e3);
+				createColorPickers(data) {
+					const pickers = []
 
-			const code = [...target.parentElement.querySelectorAll('td:last-child')]
-				.map((cell) => cell.textContent).join('\n');
+					for (const [title, description] of data) {
+						let key = title.split(/ |-/);
+						key = key[0].toLowerCase() + (key[1] || '');
 
-			clipboard.writeText(code);
-		}
+						const defaultValue = defaults.hljs[key] || defaults.hljs.foreground
 
-		get css() {
-			return `
+						pickers.push(new ColorPicker(
+							title,
+							`${description}. Default: ${defaultValue}`,
+							settings.hljs[key] || defaultValue,
+							(color) => this.updateColor(key, color)
+						))
+					}
+
+					return pickers
+				}
+
+				updateColor(key, color) {
+					settings.hljs[key] = color
+					this.save()
+				}
+
+				readURL(value) {
+					if (!value) {
+						settings = defaults
+						return this.save()
+					};
+
+					if (typeof value === 'string') {
+						if (!/json|(s[ca]|le|c)ss$/.test(value)) return;
+
+						https.get(value, this.parseResponse.bind(this, value))
+					}
+				}
+
+				parseResponse(url, response) {
+					response.setEncoding('utf8').on('data', (chunk) => {
+						switch (path.extname(url)) {
+							case '.json': {
+								const valid = Object.fromEntries(
+									Object.entries(JSON.parse(chunk)).filter(([key]) => key in defaults.hljs)
+								)
+
+								settings = {
+									...settings,
+									hljs: valid,
+									theme: url
+								}
+
+								break;
+							}
+						}
+
+						this.save()
+					})
+				}
+
+				save() {
+					PluginUtilities.saveSettings('BetterCodeblocks', settings)
+					this.reload()
+				}
+
+				reload() {
+					PluginUtilities.removeStyle('BetterCodeblocks')
+					PluginUtilities.addStyle('BetterCodeblocks', this.css)
+				}
+
+				inject(args, res) {
+					const render = res.props.render;
+
+					res.props.render = (properties) => {
+						const codeblock = render(properties);
+						const { props } = codeblock.props.children;
+
+						const classes = props.className.split(' ');
+						const language = args ? args[0].lang : classes[classes.indexOf('hljs') + 1];
+
+						const innerHTML = props.dangerouslySetInnerHTML
+						let lines;
+
+						if (innerHTML) {
+							lines = innerHTML.__html.replace(/<span class='(hljs-[a-z]+)'>([^<]*)<\/span>/g, (_, className, code) => code
+								.split('\n')
+								.map((line) => `<span class='${className}'>${line}</span>`)
+								.join('\n')
+							).split('\n')
+						} else {
+							lines = props.children.split('\n')
+						}
+
+						delete props.dangerouslySetInnerHTML;
+						props.children = this.render(language, lines);
+
+						return codeblock;
+					};
+				}
+
+				render(language, lines) {
+					const { Messages } = WebpackModules.getByProps('Messages')
+					const $hljs = DiscordModules.hljs
+
+					if ($hljs && typeof $hljs.getLanguage === 'function') {
+						language = $hljs.getLanguage(language);
+					}
+
+					return React.createElement(React.Fragment, null,
+						language && React.createElement('div', { className: 'bd-codeblock-language' }, language.name),
+
+						React.createElement('table', { className: 'bd-codeblock-table' },
+							...lines.map((line, i) => React.createElement('tr', null,
+								React.createElement('td', null, i + 1),
+								React.createElement('td',
+									language ? {
+										dangerouslySetInnerHTML: {
+											__html: line
+										}
+									} : {
+										children: line
+									}
+								)
+							))
+						),
+
+						React.createElement('button', {
+							className: 'bd-codeblock-copy-btn',
+							onClick: this.clickHandler
+						}, Messages.COPY)
+					)
+				}
+
+				clickHandler({ target }) {
+					const { Messages } = WebpackModules.getByProps('Messages')
+					const { clipboard } = require('electron')
+
+					if (target.classList.contains('copied')) return
+
+					target.innerText = Messages.ACCOUNT_USERNAME_COPY_SUCCESS_1;
+					target.classList.add('copied');
+
+					setTimeout(() => {
+						target.innerText = Messages.COPY;
+						target.classList.remove('copied');
+					}, 1e3);
+
+					const code = [...target.parentElement.querySelectorAll('td:last-child')]
+						.map((cell) => cell.textContent).join('\n');
+
+					clipboard.writeText(code);
+				}
+
+				get css() {
+					return `
 				.hljs {
-					background-color: ${this.hljs.background} !important;
-					color: ${this.hljs.text};
+					background-color: ${settings.hljs.background} !important;
+					color: ${settings.hljs.foreground};
 					position: relative;
 				}
 				
@@ -368,6 +417,7 @@ module.exports = (() => {
 					padding-left: 5px;
 					padding-right: 8px;
 					user-select: none;
+					color: ${settings.hljs.lineNumbers}
 				}
 				
 				.bd-codeblock-table td:last-child {
@@ -405,223 +455,227 @@ module.exports = (() => {
 				${this.codeBlockStyle}				
 
 				.codeLine-14BKbG > span > span {
-					color: ${this.hljs.text};
+					color: ${settings.hljs.foreground};
 				}
 
 				${this.textBoxStyle}
 			`
-		}
+				}
 
-		get codeBlockStyle() {
-			return `
+				get codeBlockStyle() {
+					return `
 				.hljs > .bd-codeblock-table > tr > td > span > .hljs-tag {
-					color: ${this.hljs.tag};
+					color: ${settings.hljs.tags};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > span > .hljs-tag > .hljs-name {
-					color: ${this.hljs.name};
+					color: ${settings.hljs.names};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > span > .hljs-tag > .hljs-attr {
-					color: ${this.hljs.attr};
+					color: ${settings.hljs.unspecifiedAttributes};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .bash > .hljs-built_in {
-					color: ${this.hljs.built_in};
+					color: ${settings.hljs.builtIns};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .bash > .hljs-variable {
-					color: ${this.hljs.variable};
+					color: ${settings.hljs.variables};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-tag {
-					color: ${this.hljs.tag} !important;
+					color: ${settings.hljs.tags} !important;
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-tag > .hljs-name {
-					color: ${this.hljs.name};
+					color: ${settings.hljs.names};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-tag > .hljs-attr {
-					color: ${this.hljs.attr};
+					color: ${settings.hljs.attributes};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-function > .hljs-params {
-					color: ${this.hljs.params};
+					color: ${settings.hljs.parameters};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-function > .hljs-type {
-					color: ${this.hljs.type};
+					color: ${settings.hljs.types};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-function > .hljs-params > .hljs-type {
-					color: ${this.hljs.type};
+					color: ${settings.hljs.types};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-operator {
-					color: ${this.hljs.operator};
+					color: ${settings.hljs.operators};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-punctuation {
-					color: ${this.hljs.punctuation};
+					color: ${settings.hljs.punctuation};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-name {
-					color: ${this.hljs.name};
+					color: ${settings.hljs.names};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-params {
-					color: ${this.hljs.params};
+					color: ${settings.hljs.parameters};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-title {
-					color: ${this.hljs.title};
+					color: ${settings.hljs.title};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-function > .hljs-params > .hljs-built_in {
-					color: ${this.hljs.built_in};
+					color: ${settings.hljs.builtIns};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-selector-attr {
-					color: ${this.hljs.selector_attr};
+					color: ${settings.hljs.attributeSelectors};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-type {
-					color: ${this.hljs.type};
+					color: ${settings.hljs.types};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-selector-id {
-					color: ${this.hljs.selector_id};
+					color: ${settings.hljs.idSelectors};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-selector-pseudo {
-					color: ${this.hljs.selector_pseudo};
+					color: ${settings.hljs.pseudoSelectors};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-bullet {
-					color: ${this.hljs.bullet};
+					color: ${settings.hljs.bulletPoints};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-emphasis {
-					color: ${this.hljs.emphasis}
+					color: ${settings.hljs.italics}
+				}
+
+				.hljs.md > .bd-codeblock-table > tr > td > .hljs-section {
+					color: ${settings.hljs.headings}
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-link {
-					color: ${this.hljs.link}
+					color: ${settings.hljs.hyperlinks}
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-strong {
-					color: ${this.hljs.strong}
+					color: ${settings.hljs.bold}
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-addition {
-					color: ${this.hljs.addition};
+					color: ${settings.hljs.additions};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-deletion {
-					color: ${this.hljs.deletion};
+					color: ${settings.hljs.deletions};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-regexp {
-					color: ${this.hljs.regexp};
+					color: ${settings.hljs.regularExpressions};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-doctag {
-					color: ${this.hljs.doctag};
+					color: ${settings.hljs.documentationTags};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-built_in {
-					color: ${this.hljs.built_in};
+					color: ${settings.hljs.builtIns};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-attr {
-					color: ${this.hljs.attr};
+					color: ${settings.hljs.attributes};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-section {
-					color: ${this.hljs.section};
+					color: ${settings.hljs.sections};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-meta {
-					color: ${this.hljs.meta};
+					color: ${settings.hljs.meta};
 				}
 				
 				.hljs > .bd-codeblock-table > tr > td .hljs-literal {
-					color: ${this.hljs.literal};
+					color: ${settings.hljs.literals};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-function .hljs-title {
-					color: ${this.hljs.function};
+					color: ${settings.hljs.functions};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td > .hljs-class .hljs-title {
-					color: ${this.hljs.class};
+					color: ${settings.hljs.classes};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-keyword {
-					color: ${this.hljs.keyword};
+					color: ${settings.hljs.keywords};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-selector-tag {
-					color: ${this.hljs.selector_tag};
+					color: ${settings.hljs.tagSelectors};
 				}
 				
 				.hljs > .bd-codeblock-table > tr > td .hljs-selector-class {
-					color: ${this.hljs.selector_class};
+					color: ${settings.hljs.classSelectors};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-attribute {
-					color: ${this.hljs.attribute};
+					color: ${settings.hljs.attributes};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-symbol {
-					color: ${this.hljs.symbol};
+					color: ${settings.hljs.symbols};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-number {
-					color: ${this.hljs.number};
+					color: ${settings.hljs.numbers};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-string {
-					color: ${this.hljs.string};
+					color: ${settings.hljs.strings};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-string > .hljs-subst > .hljs-built_in {
-					color: ${this.hljs.built_in};
+					color: ${settings.hljs.builtIns};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-subst {
-					color: ${this.hljs.subst};
+					color: ${settings.hljs.stringInterpolation};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-code {
-					color: ${this.hljs.code};
+					color: ${settings.hljs.codeblocks};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-comment {
-					color: ${this.hljs.comment};
+					color: ${settings.hljs.comments};
 				}
 				
 				.hljs > .bd-codeblock-table > tr > td .hljs-quote {
-					color: ${this.hljs.quote};
+					color: ${settings.hljs.quotes};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-variable {
-					color: ${this.hljs.variable};
+					color: ${settings.hljs.variables};
 				}
 
 				.hljs > .bd-codeblock-table > tr > td .hljs-meta-string {
-					color: ${this.hljs.meta_string};
+					color: ${settings.hljs.metaStrings};
 				}
 			`
-		}
+				}
 
-		get textBoxStyle() {
-			return this.codeBlockStyle.replace(/\.hljs[\w ->]+td/gm, '.codeLine-14BKbG > span > span')
-		}
-	};
-};
-        return plugin(Plugin, Api);
-    })(global.ZeresPluginLibrary.buildPlugin(config));
+				get textBoxStyle() {
+					return this.codeBlockStyle.replace(/\.hljs[\w\. ->]+td/gm, '.codeLine-14BKbG > span > span')
+				}
+			};
+		};
+		return plugin(Plugin, Api);
+	})(global.ZeresPluginLibrary.buildPlugin(config));
 })();
 /*@end@*/
