@@ -4,20 +4,30 @@ Enhances the look and feel of Discord's codeblocks with customizable colors. Cod
 
 ## Previews
 
-![TypeScript/Script Languages](https://imgur.com/vwyxu6C.png)
+![C++](previews/cpp.png)
 
-![Swift](https://imgur.com/B5LBKtZ.png)
+![C#](previews/csharp.png)
 
-![SQL/Query Languages](https://imgur.com/PrpVVuJ.png)
+![Go](previews/go.png)
 
-![SCSS/Stylesheets](https://imgur.com/oWJwarB.png)
+![Java](previews/java.png)
 
-![Python](https://imgur.com/5hjJV3l.png)
+![JavaScript](previews/javascript.png)
 
-![Rust](https://imgur.com/VESyj9X.png)
+![Kotlin](previews/kotlin.png)
 
-![Java](https://imgur.com/qVpgf3B.png)
+![Objective-C](previews/objective-c.png)
 
-![HTML/Markup Languages](https://imgur.com/CT2iRbN.png)
+![PHP](previews/php.png)
 
-![C#](https://imgur.com/YMwxEip.png)
+![Python](previews/python.png)
+
+![Ruby](previews/ruby.png)
+
+![Rust](previews/rust.png)
+
+![SCSS](previews/scss.png)
+
+![Swift](previews/swift.png)
+
+![TypeScript](previews/typescript.png)
