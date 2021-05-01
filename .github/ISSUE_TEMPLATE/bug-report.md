@@ -14,7 +14,7 @@ assignees: ''
 **Screenshots**
 
 **Additional info**
-- Codeblock language, if any:
+
+- Plugin name & version:
 - Discord build & version:
 - Platform:
-- Plugin version:
