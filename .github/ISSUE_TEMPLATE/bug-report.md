@@ -7,14 +7,16 @@ assignees: ''
 
 ---
 
-**A clear description of the issue**
+## Description
 
-**Steps to reproduce, if applicable**
+### Reproduction Steps
 
-**Screenshots**
+<!-- Put "N/A" if none -->
 
-**Additional info**
+### Screenshots
 
-- Plugin name & version:
-- Discord build & version:
+### Additional Info
+
+- Plugin Name:
+- Discord Release: <!-- PTB, Stable, Canary -->
 - Platform:
