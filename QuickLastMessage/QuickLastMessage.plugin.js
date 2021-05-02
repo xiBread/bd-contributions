@@ -1,7 +1,7 @@
 /**
  * @name QuickLastMessage
- * @website https://github.com/vBread/bd-contributions/QuickLastMessage
- * @source https://github.com/vBread/bd-contributions/QuickLastMessage/blob/master/QuickLastMessage.plugin.js
+ * @website https://github.com/vBread/bd-contributions/tree/master/QuickLastMessage
+ * @source https://github.com/vBread/bd-contributions/blob/master/QuickLastMessage/QuickLastMessage.plugin.js
  */
 /*@cc_on
 @if (@_jscript)
@@ -28,7 +28,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"main":"index.js","info":{"name":"QuickLastMessage","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.0.0","description":"Quickly access your last message by pressing the down arrow","github":"https://github.com/vBread/bd-contributions/QuickLastMessage","github_raw":"https://github.com/vBread/bd-contributions/QuickLastMessage/blob/master/QuickLastMessage.plugin.js"},"changelog":[{"title":"Initial Release","type":"improved","items":["Initial release"]}]};
+    const config = {"main":"index.js","info":{"name":"QuickLastMessage","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.0.1","description":"Quickly access your last message by pressing the down arrow","github":"https://github.com/vBread/bd-contributions/tree/master/QuickLastMessage","github_raw":"https://github.com/vBread/bd-contributions/blob/master/QuickLastMessage/QuickLastMessage.plugin.js"},"changelog":[{"title":"Fix","type":"fixed","items":["Update links"]}]};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}

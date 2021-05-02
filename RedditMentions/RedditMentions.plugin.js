@@ -1,11 +1,7 @@
 /**
  * @name RedditMentions
- * @invite undefined
- * @authorLink undefined
- * @donate undefined
- * @patreon undefined
- * @website https://github.com/vBread/bd-contributions/RedditMentions
- * @source https://github.com/vBread/bd-contributions/RedditMentions/blob/master/RedditMentions.plugin.js
+ * @website https://github.com/vBread/bd-contributions/tree/master/RedditMentions
+ * @source https://github.com/vBread/bd-contributions/blob/master/RedditMentions/RedditMentions.plugin.js
  */
 /*@cc_on
 @if (@_jscript)
@@ -32,7 +28,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"main":"index.js","info":{"name":"RedditMentions","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.0.0","description":"Renders subreddit and user mentions as hyperlinks","github":"https://github.com/vBread/bd-contributions/RedditMentions","github_raw":"https://github.com/vBread/bd-contributions/RedditMentions/blob/master/RedditMentions.plugin.js"},"changelog":[{"title":"Initial Release","type":"improved","items":["Initial release"]}]};
+    const config = {"main":"index.js","info":{"name":"RedditMentions","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.0.1","description":"Renders subreddit and user mentions as hyperlinks","github":"https://github.com/vBread/bd-contributions/tree/master/RedditMentions","github_raw":"https://github.com/vBread/bd-contributions/blob/master/RedditMentions/RedditMentions.plugin.js"},"changelog":[{"title":"Fix","type":"fixed","items":["Update links"]}]};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}

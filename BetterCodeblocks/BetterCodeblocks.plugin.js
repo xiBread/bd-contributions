@@ -1,11 +1,7 @@
 /**
  * @name BetterCodeblocks
- * @invite undefined
- * @authorLink undefined
- * @donate undefined
- * @patreon undefined
- * @website https://github.com/vBread/bd-contributions/BetterCodeblocks
- * @source https://github.com/vBread/bd-contributions/BetterCodeblocks/blob/master/BetterCodeblocks.plugin.js
+ * @website https://github.com/vBread/bd-contributions/tree/master/BetterCodeblocks
+ * @source https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/BetterCodeblocks.plugin.js
  */
 /*@cc_on
 @if (@_jscript)
@@ -32,7 +28,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"main":"index.js","info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.2.1","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/bd-contributions/BetterCodeblocks","github_raw":"https://github.com/vBread/bd-contributions/BetterCodeblocks/blob/master/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Fix","type":"fixed","items":["Update GitHub links"]}]};
+    const config = {"main":"index.js","info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.2.2","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/bd-contributions/tree/master/BetterCodeblocks","github_raw":"https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Fix","type":"fixed","items":["Update GitHub links"]}]};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}
