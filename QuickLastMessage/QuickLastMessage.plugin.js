@@ -1,5 +1,9 @@
 /**
  * @name QuickLastMessage
+ * @invite undefined
+ * @authorLink undefined
+ * @donate undefined
+ * @patreon undefined
  * @website https://github.com/vBread/bd-contributions/tree/master/QuickLastMessage
  * @source https://github.com/vBread/bd-contributions/blob/master/QuickLastMessage/QuickLastMessage.plugin.js
  */
@@ -28,7 +32,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"main":"index.js","info":{"name":"QuickLastMessage","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.0.1","description":"Quickly access your last message by pressing the down arrow","github":"https://github.com/vBread/bd-contributions/tree/master/QuickLastMessage","github_raw":"https://github.com/vBread/bd-contributions/blob/master/QuickLastMessage/QuickLastMessage.plugin.js"},"changelog":[{"title":"Fix","type":"fixed","items":["Update links"]}]};
+    const config = {"main":"index.js","info":{"name":"QuickLastMessage","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.0.2","description":"Quickly access your last message by pressing the down arrow","github":"https://github.com/vBread/bd-contributions/tree/master/QuickLastMessage","github_raw":"https://github.com/vBread/bd-contributions/blob/master/QuickLastMessage/QuickLastMessage.plugin.js"},"changelog":[{"title":"Fix","type":"fixed","items":["Disable the ALT key from triggering the plugin"]}]};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}
@@ -69,7 +73,7 @@ module.exports = (() => {
 			const { ComponentDispatch } = WebpackModules.getByProps('ComponentDispatch')
 
 			document.addEventListener('keydown', (event) => {
-				if (!this.active || event.ctrlKey) return;
+				if (!this.active || event.ctrlKey || event.altKey) return;
 
 				if (event.key === 'ArrowDown') {
 					let message;
