@@ -217,7 +217,7 @@ module.exports = (() => {
 			)
 
 			const div = document.createElement('div')
-			div.innerHTML = '<a href="https://github.com/vBread/BetterCodeblocks/blob/master/UPLOADING.md">Uploading Guide</a>'
+			div.innerHTML = '<a href="https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/UPLOADING.md">Uploading Guide</a>'
 
 			panel.appendChild(div)
 
