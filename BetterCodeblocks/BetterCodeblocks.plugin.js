@@ -28,7 +28,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"main":"index.js","info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.2.3","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/bd-contributions/tree/master/BetterCodeblocks","github_raw":"https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Fix","type":"fixed","items":["Update GitHub links"]}]};
+    const config = {"main":"index.js","info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.3.0","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/bd-contributions/tree/master/BetterCodeblocks","github_raw":"https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Improvements","type":"improved","items":["Extraneous leading whitespace is now removed from codeblocks"]}]};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}
@@ -52,12 +52,14 @@ module.exports = (() => {
         stop() {}
     } : (([Plugin, Api]) => {
         const plugin = (Plugin, Library) => {
+	const https = require('https')
+	const path = require('path');
+
 	const { Patcher, WebpackModules, DiscordModules, PluginUtilities, Settings } = Library;
 	const { SettingGroup, ColorPicker, Textbox } = Settings
 	const { React } = DiscordModules
 
-	const https = require('https')
-	const path = require('path');
+	const PLUGIN_ID = 'BetterCodeblocks'
 
 	const defaults = {
 		hljs: {
@@ -107,24 +109,26 @@ module.exports = (() => {
 		theme: ''
 	}
 
-	let settings = PluginUtilities.loadSettings('BetterCodeblocks', defaults)
+	let settings = PluginUtilities.loadSettings(PLUGIN_ID, defaults)
 
 	return class BetterCodeblocks extends Plugin {
 		onStart() {
 			const parser = WebpackModules.getByProps('parse', 'parseTopic')
 
-			Patcher.after(parser.defaultRules.codeBlock, 'react', (_, args, res) => {
-				this.inject(args, res)
+			this.unpatch = Patcher.after(parser.defaultRules.codeBlock, 'react', (_, nodes, output) => {
+				this.inject(nodes, output)
 
-				return res
+				nodes[0].content = this.dedent(nodes[0].content)
+
+				return output
 			});
 
-			PluginUtilities.addStyle('BetterCodeblocks', this.css)
+			PluginUtilities.addStyle(PLUGIN_ID, this.css)
 		}
 
 		onStop() {
-			PluginUtilities.removeStyle('BetterCodeblocks')
-			Patcher.unpatchAll();
+			PluginUtilities.removeStyle(PLUGIN_ID)
+			this.unpatch()
 		}
 
 		getSettingsPanel() {
@@ -285,24 +289,33 @@ module.exports = (() => {
 		}
 
 		save() {
-			PluginUtilities.saveSettings('BetterCodeblocks', settings)
+			PluginUtilities.saveSettings(PLUGIN_ID, settings)
 			this.reload()
 		}
 
 		reload() {
-			PluginUtilities.removeStyle('BetterCodeblocks')
-			PluginUtilities.addStyle('BetterCodeblocks', this.css)
+			PluginUtilities.removeStyle(PLUGIN_ID)
+			PluginUtilities.addStyle(PLUGIN_ID, this.css)
 		}
 
-		inject(args, res) {
-			const render = res.props.render;
 
-			res.props.render = (properties) => {
+		dedent(content) {
+			content = content.replace(/\t/g, ' '.repeat(4));
+
+			const min = content.match(/^[^\S\n]+/gm)?.reduce((x, y) => Math.min(x, y.length), Infinity) ?? 0;
+
+			return !min ? content : content.replace(new RegExp(`^ {${min}}`, "gm"), '');
+		}
+
+		inject(nodes, output) {
+			const render = output.props.render;
+
+			output.props.render = (properties) => {
 				const codeblock = render(properties);
 				const { props } = codeblock.props.children;
 
 				const classes = props.className.split(' ');
-				const language = args ? args[0].lang : classes[classes.indexOf('hljs') + 1];
+				const language = nodes ? nodes[0].lang : classes[classes.indexOf('hljs') + 1];
 
 				const innerHTML = props.dangerouslySetInnerHTML
 				let lines;
