@@ -1,5 +1,9 @@
 /**
  * @name BetterCodeblocks
+ * @invite undefined
+ * @authorLink undefined
+ * @donate undefined
+ * @patreon undefined
  * @website https://github.com/vBread/bd-contributions/tree/master/BetterCodeblocks
  * @source https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/BetterCodeblocks.plugin.js
  */
@@ -28,7 +32,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"main":"index.js","info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.3.0","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/bd-contributions/tree/master/BetterCodeblocks","github_raw":"https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Improvements","type":"improved","items":["Extraneous leading whitespace is now removed from codeblocks"]}]};
+    const config = {"main":"index.js","info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.3.1","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/bd-contributions/tree/master/BetterCodeblocks","github_raw":"https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Fixes","type":"fixed","items":["Fixed an issue where color pickers would cause the settings panel to not open. They have been replaced with textboxes temporarily."]}]};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}
@@ -52,11 +56,12 @@ module.exports = (() => {
         stop() {}
     } : (([Plugin, Api]) => {
         const plugin = (Plugin, Library) => {
+
 	const https = require('https')
 	const path = require('path');
 
 	const { Patcher, WebpackModules, DiscordModules, PluginUtilities, Settings } = Library;
-	const { SettingGroup, ColorPicker, Textbox } = Settings
+	const { SettingGroup, Textbox } = Settings
 	const { React } = DiscordModules
 
 	const PLUGIN_ID = 'BetterCodeblocks'
@@ -138,7 +143,7 @@ module.exports = (() => {
 
 			new SettingGroup('Customization').appendTo(panel).append(
 				new SettingGroup('Main').append(
-					...this.createColorPickers([
+					...this.createColorInput([
 						['Foreground', 'Applies to any text without a style'],
 						['Background', 'Applies to the background of the codeblock'],
 						['Line Numbers', 'Applies to the line numbers']
@@ -146,7 +151,7 @@ module.exports = (() => {
 				),
 
 				new SettingGroup('General').append(
-					...this.createColorPickers([
+					...this.createColorInput([
 						['Keywords', 'Applies to keywords in a regular ALGOL-style language'],
 						['Built-Ins', 'Applies to built-in objects and/or library objects'],
 						['Types', 'Applies to syntactically significant types'],
@@ -169,7 +174,7 @@ module.exports = (() => {
 				),
 
 				new SettingGroup('Meta').append(
-					...this.createColorPickers([
+					...this.createColorInput([
 						['Meta', 'Applies to modifiers, annotations, preprocessor directives, etc.'],
 						['Meta Keywords', 'Applies to keywords or built-ins within meta constructs'],
 						['Meta Strings', 'Applies to strings within meta constructs']
@@ -177,7 +182,7 @@ module.exports = (() => {
 				),
 
 				new SettingGroup('Markdown').append(
-					...this.createColorPickers([
+					...this.createColorInput([
 						['Bullet Points', 'Applies to bullet points in an unordered list'],
 						['Codeblocks', 'Applies to code blocks'],
 						['Italics', 'Applies to italicized text'],
@@ -189,7 +194,7 @@ module.exports = (() => {
 				),
 
 				new SettingGroup('CSS').append(
-					...this.createColorPickers([
+					...this.createColorInput([
 						['Tag Selectors', 'Applies to tag selectors'],
 						['ID Selectors', 'Applies to ID selectors'],
 						['Class Selectors', 'Applies to class selectors'],
@@ -199,7 +204,7 @@ module.exports = (() => {
 				),
 
 				new SettingGroup('Misc').append(
-					...this.createColorPickers([
+					...this.createColorInput([
 						['Sections', 'Applies to headings of a section in a config file'],
 						['Tags', 'Applies to XML and HTML tags'],
 						['Names', 'Applies to XML and HTML tag names and S-expressions'],
@@ -228,7 +233,7 @@ module.exports = (() => {
 			return panel
 		}
 
-		createColorPickers(data) {
+		createColorInput(data) {
 			const pickers = []
 
 			for (const [title, description] of data) {
@@ -236,11 +241,14 @@ module.exports = (() => {
 				key = key[0].toLowerCase() + (key[1] || '');
 
 				const defaultValue = defaults.hljs[key] || defaults.hljs.foreground
+				const value = settings.hljs[key]
 
-				pickers.push(new ColorPicker(
+				console.log(defaultValue, value)
+
+				pickers.push(new Textbox(
 					title,
 					`${description}. Default: ${defaultValue}`,
-					settings.hljs[key] || defaultValue,
+					value && Object.keys(value).length ? value : defaultValue,
 					(color) => this.updateColor(key, color)
 				))
 			}
@@ -397,7 +405,7 @@ module.exports = (() => {
 					color: ${settings.hljs.foreground};
 					position: relative;
 				}
-				
+
 				.hljs:not([class$='hljs']) {
 					padding-top: 2px;
 				}
@@ -411,16 +419,16 @@ module.exports = (() => {
 					font-family: 'Raleway', sans-serif;
 					font-weight: bold;
 				}
-				
+
 				.bd-codeblock-table {
 					border-collapse: collapse;
 				}
-				
+
 				.bd-codeblock-table tr {
 					height: 19px;
 					width: 100%;
 				}
-				
+
 				.bd-codeblock-table td:first-child {
 					border-right: 1px solid var(--background-modifier-accent);
 					padding-left: 5px;
@@ -428,12 +436,12 @@ module.exports = (() => {
 					user-select: none;
 					color: ${settings.hljs.lineNumbers}
 				}
-				
+
 				.bd-codeblock-table td:last-child {
 					padding-left: 8px;
 					word-break: break-all;
 				}
-				
+
 				.bd-codeblock-copy-btn {
 					color: var(--text-normal);
 					border-radius: 4px;
@@ -451,12 +459,12 @@ module.exports = (() => {
 					opacity: 0;
 					transition: .3s;
 				}
-				
+
 				.bd-codeblock-copy-btn.copied {
 					background-color: #43b581;
 					opacity: 1;
 				}
-				
+
 				.hljs:hover .bd-codeblock-copy-btn {
 					opacity: 1;
 				}
@@ -608,7 +616,7 @@ module.exports = (() => {
 				.hljs > .bd-codeblock-table > tr > td .hljs-meta {
 					color: ${settings.hljs.meta};
 				}
-				
+
 				.hljs > .bd-codeblock-table > tr > td .hljs-literal {
 					color: ${settings.hljs.literals};
 				}
@@ -628,7 +636,7 @@ module.exports = (() => {
 				.hljs > .bd-codeblock-table > tr > td .hljs-selector-tag {
 					color: ${settings.hljs.tagSelectors};
 				}
-				
+
 				.hljs > .bd-codeblock-table > tr > td .hljs-selector-class {
 					color: ${settings.hljs.classSelectors};
 				}
@@ -664,7 +672,7 @@ module.exports = (() => {
 				.hljs > .bd-codeblock-table > tr > td .hljs-comment {
 					color: ${settings.hljs.comments};
 				}
-				
+
 				.hljs > .bd-codeblock-table > tr > td .hljs-quote {
 					color: ${settings.hljs.quotes};
 				}
