@@ -32,7 +32,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"main":"index.js","info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.3.1","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/bd-contributions/tree/master/BetterCodeblocks","github_raw":"https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Fixes","type":"fixed","items":["Fixed an issue where color pickers would cause the settings panel to not open. They have been replaced with textboxes temporarily."]}]};
+    const config = {"main":"index.js","info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.3.2","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/bd-contributions/tree/master/BetterCodeblocks","github_raw":"https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Fixes","type":"fixed","items":["Fixed a vulnerability issue."]}]};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}
@@ -338,14 +338,16 @@ module.exports = (() => {
 					lines = props.children.split('\n')
 				}
 
+				const dangeorus = Boolean(props.dangerouslySetInnerHTML);
 				delete props.dangerouslySetInnerHTML;
-				props.children = this.render(language, lines);
+
+				props.children = this.render(language, lines, dangeorus);
 
 				return codeblock;
 			};
 		}
 
-		render(language, lines) {
+		render(language, lines, dangerous) {
 			const { Messages } = WebpackModules.getByProps('Messages')
 			const $hljs = DiscordModules.hljs
 
@@ -360,7 +362,7 @@ module.exports = (() => {
 					...lines.map((line, i) => React.createElement('tr', null,
 						React.createElement('td', null, i + 1),
 						React.createElement('td',
-							language ? {
+							language && dangerous ? {
 								dangerouslySetInnerHTML: {
 									__html: line
 								}
