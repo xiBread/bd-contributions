@@ -32,7 +32,7 @@
 @else@*/
 
 module.exports = (() => {
-    const config = {"main":"index.js","info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.3.2","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/bd-contributions/tree/master/BetterCodeblocks","github_raw":"https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Fixes","type":"fixed","items":["Fixed a vulnerability issue."]}]};
+    const config = {"main":"index.js","info":{"name":"BetterCodeblocks","authors":[{"name":"Bread","discord_id":"304260051915374603","github_username":"vBread"}],"version":"1.3.3","description":"Enhances the look and feel of Discord's codeblocks with customizable colors","github":"https://github.com/vBread/bd-contributions/tree/master/BetterCodeblocks","github_raw":"https://github.com/vBread/bd-contributions/blob/master/BetterCodeblocks/BetterCodeblocks.plugin.js"},"changelog":[{"title":"Fixes","type":"fixed","items":["Improve caching performance", "Fixed a vulnerability issue."]}]};
 
     return !global.ZeresPluginLibrary ? class {
         constructor() {this._config = config;}
@@ -64,6 +64,7 @@ module.exports = (() => {
 	const { SettingGroup, Textbox } = Settings
 	const { React } = DiscordModules
 
+	const { Messages } = WebpackModules.getByProps('Messages')
 	const PLUGIN_ID = 'BetterCodeblocks'
 
 	const defaults = {
@@ -348,7 +349,6 @@ module.exports = (() => {
 		}
 
 		render(language, lines, dangerous) {
-			const { Messages } = WebpackModules.getByProps('Messages')
 			const $hljs = DiscordModules.hljs
 
 			if ($hljs && typeof $hljs.getLanguage === 'function') {
@@ -381,7 +381,6 @@ module.exports = (() => {
 		}
 
 		clickHandler({ target }) {
-			const { Messages } = WebpackModules.getByProps('Messages')
 			const { clipboard } = require('electron')
 
 			if (target.classList.contains('copied')) return
