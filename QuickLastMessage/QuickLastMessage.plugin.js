@@ -85,6 +85,9 @@ module.exports = (() => {
 					})
 
 					const { textContent } = document.querySelector("div[class*='slateTextArea']").childNodes[0].childNodes[0]
+					if (textContent.trim() != '') {
+						return;
+					}
 					const role = document.activeElement.getAttribute('role')
 
 					if (!textContent.trim().length && message && role === 'textbox') {
