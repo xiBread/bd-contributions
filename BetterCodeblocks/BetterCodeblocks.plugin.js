@@ -123,9 +123,6 @@ module.exports = (() => {
 
 			this.unpatch = Patcher.after(parser.defaultRules.codeBlock, 'react', (_, nodes, output) => {
 				this.inject(nodes, output)
-
-				nodes[0].content = this.dedent(nodes[0].content)
-
 				return output
 			});
 
