@@ -54,6 +54,6 @@ Example theme:
 	"titles": "#268bd2",
 	"types": "#b58900",
 	"unspecifiedAttributes": "#b58900",
-	"variables": "#b58900",
+	"variables": "#b58900"
 }
 ```
