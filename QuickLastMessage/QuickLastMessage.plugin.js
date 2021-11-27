@@ -66,11 +66,11 @@ module.exports = (() => {
 		}
 
 		onStart() {
-			const { getMessages } = DiscordModules.MessageStore
-			const { getCurrentUser } = DiscordModules.UserStore
+			const { getMessages } = DiscordModules.MessageStore;
+			const { getCurrentUser } = DiscordModules.UserStore;
 
-			const { getChannelId } = WebpackModules.getByProps('getChannelId')
-			const { ComponentDispatch } = WebpackModules.getByProps('ComponentDispatch')
+			const { getChannelId } =WebpackModules.getByProps('getLastSelectedChannelId');
+			const { ComponentDispatch } = WebpackModules.getByProps('ComponentDispatch');
 
 			document.addEventListener('keydown', (event) => {
 				if (!this.active || event.ctrlKey || event.altKey) return;
