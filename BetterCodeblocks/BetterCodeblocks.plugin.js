@@ -9,7 +9,7 @@
  */
 /*@cc_on
 @if (@_jscript)
-	
+
 	// Offer to self-install for clueless users that try to run this directly.
 	var shell = WScript.CreateObject("WScript.Shell");
 	var fs = new ActiveXObject("Scripting.FileSystemObject");
@@ -308,13 +308,51 @@ module.exports = (() => {
 		}
 
 
-		dedent(content) {
-			content = content.replace(/\t/g, ' '.repeat(4));
+    dedent(strings) {
+      // from https://github.com/dmnd/dedent/
+      var raw = typeof strings === "string" ? [strings] : strings.raw;
 
-			const min = content.match(/^[^\S\n]+/gm)?.reduce((x, y) => Math.min(x, y.length), Infinity) ?? 0;
+      // first, perform interpolation
+      var result = "";
+      for (var i = 0; i < raw.length; i++) {
+        result += raw[i].
+          // join lines when there is a suppressed newline
+          replace(/\\\n[ \t]*/g, "").
 
-			return !min ? content : content.replace(new RegExp(`^ {${min}}`, "gm"), '');
-		}
+          // handle escaped backticks
+          replace(/\\`/g, "`");
+
+        if (i < (arguments.length <= 1 ? 0 : arguments.length - 1)) {
+          result += arguments.length <= i + 1 ? undefined : arguments[i + 1];
+        }
+      }
+
+      // now strip indentation
+      var lines = result.split("\n");
+      var mindent = null;
+      lines.forEach(function (l) {
+        var m = l.match(/^(\s+)\S+/);
+        if (m) {
+          var indent = m[1].length;
+          if (!mindent) {
+            // this is the first indented line
+            mindent = indent;
+          } else {
+            mindent = Math.min(mindent, indent);
+          }
+        }
+      });
+
+      if (mindent !== null) {
+        (function () {
+          var m = mindent; // appease Flow
+          result = lines.map(function (l) {
+            return l[0] === " " ? l.slice(m) : l;
+          }).join("\n");
+        })();
+      }
+      return result
+    }
 
 		inject(nodes, output) {
 			const render = output.props.render;
