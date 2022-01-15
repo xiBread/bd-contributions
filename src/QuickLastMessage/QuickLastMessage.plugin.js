@@ -7,18 +7,24 @@
  * @updateUrl https://raw.githubusercontent.com/xiBread/bd-contributions/master/src/QuickLastMessage/QuickLastMessage.plugin.js
  */
 
-module.exports = (() => {
+ module.exports = (() => {
 	const config = {
 		info: {
 			name: "QuickLastMessage",
 			authors: [{ name: "Bread", discord_id: "304260051915374603", github_username: "xiBread" }],
-			version: "1.0.4",
+			version: "1.0.5",
 			description: "Quickly access your last message by pressing the down arrow",
 			github: "https://github.com/xiBread/bd-contributions/tree/master/src/QuickLastMessage",
 			github_raw:
 				"https://raw.githubusercontent.com/xiBread/bd-contributions/master/src/QuickLastMessage/QuickLastMessage.plugin.js",
 		},
-		changelog: [],
+		changelog: [
+			{
+				title: "Works again",
+				type: "fixed",
+				items: [""]
+			}
+		],
 	};
 
 	return !global.ZeresPluginLibrary
@@ -84,7 +90,7 @@ module.exports = (() => {
 							const { getMessages } = DiscordModules.MessageStore;
 							const { getCurrentUser } = DiscordModules.UserStore;
 
-							const { getChannelId } = WebpackModules.getByProps("getChannelId");
+							const { getChannelId } = WebpackModules.getByProps("getLastSelectedChannelId");
 							const { ComponentDispatch } = WebpackModules.getByProps("ComponentDispatch");
 
 							document.addEventListener("keydown", (event) => {
@@ -123,4 +129,3 @@ module.exports = (() => {
 				return plugin(Plugin, Api);
 		  })(global.ZeresPluginLibrary.buildPlugin(config));
 })();
-/*@end@*/
