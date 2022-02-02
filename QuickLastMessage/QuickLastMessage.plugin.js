@@ -2,9 +2,9 @@
  * @name QuickLastMessage
  * @author Bread
  * @authorId 304260051915374603
- * @website https://github.com/xiBread/bd-contributions/tree/master/src/QuickLastMessage
- * @source https://raw.githubusercontent.com/xiBread/bd-contributions/master/src/QuickLastMessage/QuickLastMessage.plugin.js
- * @updateUrl https://raw.githubusercontent.com/xiBread/bd-contributions/master/src/QuickLastMessage/QuickLastMessage.plugin.js
+ * @website https://github.com/xiBread/bd-contributions/tree/master/QuickLastMessage
+ * @source https://raw.githubusercontent.com/xiBread/bd-contributions/master/QuickLastMessage/QuickLastMessage.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/xiBread/bd-contributions/master/QuickLastMessage/QuickLastMessage.plugin.js
  */
 
  module.exports = (() => {
@@ -12,11 +12,11 @@
 		info: {
 			name: "QuickLastMessage",
 			authors: [{ name: "Bread", discord_id: "304260051915374603", github_username: "xiBread" }],
-			version: "1.0.5",
+			version: "1.0.6",
 			description: "Quickly access your last message by pressing the down arrow",
-			github: "https://github.com/xiBread/bd-contributions/tree/master/src/QuickLastMessage",
+			github: "https://github.com/xiBread/bd-contributions/tree/master/QuickLastMessage",
 			github_raw:
-				"https://raw.githubusercontent.com/xiBread/bd-contributions/master/src/QuickLastMessage/QuickLastMessage.plugin.js",
+				"https://raw.githubusercontent.com/xiBread/bd-contributions/master/QuickLastMessage/QuickLastMessage.plugin.js",
 		},
 		changelog: [
 			{

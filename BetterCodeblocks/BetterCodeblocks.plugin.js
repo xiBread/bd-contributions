@@ -2,9 +2,9 @@
  * @name BetterCodeblocks
  * @author Bread
  * @authorId 304260051915374603
- * @website https://github.com/xiBread/bd-contributions/tree/master/src/BetterCodeblocks
- * @source https://raw.githubusercontent.com/xiBread/bd-contributions/master/src/BetterCodeblocks/BetterCodeblocks.plugin.js
- * @updateUrl https://raw.githubusercontent.com/xiBread/bd-contributions/master/src/BetterCodeblocks/BetterCodeblocks.plugin.js
+ * @website https://github.com/xiBread/bd-contributions/tree/master/BetterCodeblocks
+ * @source https://raw.githubusercontent.com/xiBread/bd-contributions/master/BetterCodeblocks/BetterCodeblocks.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/xiBread/bd-contributions/master/BetterCodeblocks/BetterCodeblocks.plugin.js
  */
 
 module.exports = (() => {
@@ -12,10 +12,10 @@ module.exports = (() => {
 		info: {
 			name: "BetterCodeblocks",
 			authors: [{ name: "Bread", discord_id: "304260051915374603", github_username: "xiBread" }],
-			version: "2.0.1",
+			version: "2.0.2",
 			description: "Enhances the look and feel of Discord's codeblocks",
-			github: "https://github.com/xiBread/bd-contributions/tree/master/src/BetterCodeblocks",
-			github_raw: "https://raw.githubusercontent.com/xiBread/bd-contributions/master/src/BetterCodeblocks/BetterCodeblocks.plugin.js",
+			github: "https://github.com/xiBread/bd-contributions/tree/master/BetterCodeblocks",
+			github_raw: "https://raw.githubusercontent.com/xiBread/bd-contributions/master/BetterCodeblocks/BetterCodeblocks.plugin.js",
 		},
 		changelog: [
 			{
@@ -115,6 +115,10 @@ module.exports = (() => {
 
 						onStop() {
 							this.unpatch();
+						}
+
+						getSettingsPanel() {
+
 						}
 
 						loadShiki() {
@@ -294,6 +298,12 @@ module.exports = (() => {
 								)
 							);
 						}
+					}
+
+					class PluginSettings extends React.PureComponent {
+						themes = []
+
+						render() {}
 					}
 
 					return BetterCodeblocks;

@@ -2,9 +2,9 @@
  * @name RedditMentions
  * @author Bread
  * @authorId 304260051915374603
- * @website https://github.com/xiBread/bd-contributions/tree/master/src/RedditMentions
- * @source https://raw.githubusercontent.com/xiBread/bd-contributions/master/src/RedditMentions/RedditMentions.plugin.js
- * @updateUrl https://raw.githubusercontent.com/xiBread/bd-contributions/master/src/RedditMentions/RedditMentions.plugin.js
+ * @website https://github.com/xiBread/bd-contributions/tree/master/RedditMentions
+ * @source https://raw.githubusercontent.com/xiBread/bd-contributions/master/RedditMentions/RedditMentions.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/xiBread/bd-contributions/master/RedditMentions/RedditMentions.plugin.js
  */
 
 module.exports = (() => {
@@ -12,12 +12,12 @@ module.exports = (() => {
 		main: "index.js",
 		info: {
 			name: "RedditMentions",
-			authors: [{ name: "Bread", discord_id: "304260051915374603", github_username: "vBread" }],
-			version: "1.0.2",
+			authors: [{ name: "Bread", discord_id: "304260051915374603", github_username: "xiBread" }],
+			version: "1.0.3",
 			description: "Renders subreddit and user mentions as hyperlinks",
-			github: "https://github.com/xiBread/bd-contributions/tree/master/src/RedditMentions",
+			github: "https://github.com/xiBread/bd-contributions/tree/master/RedditMentions",
 			github_raw:
-				"https://raw.githubusercontent.com/xiBread/bd-contributions/master/src/RedditMentions/RedditMentions.plugin.js",
+				"https://raw.githubusercontent.com/xiBread/bd-contributions/master/RedditMentions/RedditMentions.plugin.js",
 		},
 		changelog: [],
 	};

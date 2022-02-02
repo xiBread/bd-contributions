@@ -1,8 +1,10 @@
-# BetterMentions
+# BetterMentions (W.I.P)
 
 Render mentions for various services such as VSCO, YouTube, Reddit, GitHub, and more.
 
 ## Settings
+
+> TODO
 
 ## Available Services
 
