@@ -3,7 +3,7 @@
 		"@types/electron": "^1.6.10",
 		"@types/highlightjs": "^9.12.2",
 		"@types/react": "^17.0.38",
-		"electron": "^16.0.7",
+		"electron": "^16.2.6",
 		"shiki": "^0.10.0",
 		"simple-icons": "^6.6.0"
 	}
