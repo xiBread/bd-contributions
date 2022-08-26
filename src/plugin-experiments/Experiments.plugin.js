@@ -1,9 +1,9 @@
 /**
  * @name Experiments
  * @author Bread
+ * @authorId 304260051915374603
  * @description Enables the Experiments and related tabs in the settings menu.
  * @version 1.0.0
- * @authorId 304260051915374603
  * @website https://github.com/xiBread/bd-contributions
  */
 
