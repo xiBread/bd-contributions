@@ -2,145 +2,68 @@
  * @name RedditMentions
  * @author Bread
  * @authorId 304260051915374603
- * @website https://github.com/xiBread/bd-contributions/tree/master/RedditMentions
- * @source https://raw.githubusercontent.com/xiBread/bd-contributions/master/RedditMentions/RedditMentions.plugin.js
- * @updateUrl https://raw.githubusercontent.com/xiBread/bd-contributions/master/RedditMentions/RedditMentions.plugin.js
+ * @description Renders `r/` and `u/` mentions as hyperlinks as you would see on Reddit.
+ * @version 1.0.4
+ * @website https://github.com/xiBread/bd-contributions
  */
 
-module.exports = (() => {
-	const config = {
-		main: "index.js",
-		info: {
-			name: "RedditMentions",
-			authors: [{ name: "Bread", discord_id: "304260051915374603", github_username: "xiBread" }],
-			version: "1.0.3",
-			description: "Renders subreddit and user mentions as hyperlinks",
-			github: "https://github.com/xiBread/bd-contributions/tree/master/RedditMentions",
-			github_raw:
-				"https://raw.githubusercontent.com/xiBread/bd-contributions/master/RedditMentions/RedditMentions.plugin.js",
-		},
-		changelog: [],
-	};
+const SUB_OR_USER_RX = /\b\/?(?:r\/([a-zA-Z\d]\w{2,20})|u\/([\w-]{3,20}))/g;
 
-	return !global.ZeresPluginLibrary
-		? class {
-				constructor() {
-					this._config = config;
+module.exports = () => ({
+	start() {
+		const webpack = BdApi.Webpack;
+		const parser = webpack.getModule(webpack.Filters.byProps("parse", "parseTopic"));
+
+		BdApi.Patcher.after("parseReddit", parser, "parse", (_0, _1, msg) => {
+			return this.parseReddit(msg);
+		});
+	},
+
+	stop() {
+		BdApi.Patcher.unpatchAll("parseReddit");
+	},
+
+	parseReddit(msg) {
+		const parsed = [];
+
+		for (const element of msg) {
+			if (typeof element !== "string") {
+				if (["u", "em", "strong"].includes(element.type)) {
+					element.props.children = this.parseReddit(element.props.children);
 				}
-				getName() {
-					return config.info.name;
+
+				if (element.type.name === "StringPart") {
+					element.props.parts = this.parseReddit(element.props.parts);
 				}
-				getAuthor() {
-					return config.info.authors.map((a) => a.name).join(", ");
-				}
-				getDescription() {
-					return config.info.description;
-				}
-				getVersion() {
-					return config.info.version;
-				}
-				load() {
-					BdApi.showConfirmationModal(
-						"Library Missing",
-						`The library plugin needed for ${config.info.name} is missing. Please click Download Now to install it.`,
+
+				parsed.push(element);
+				continue;
+			}
+
+			const mentions = element.match(SUB_OR_USER_RX);
+			if (!mentions) {
+				parsed.push(element);
+				continue;
+			}
+
+			for (const mention of mentions) {
+				parsed.push(
+					BdApi.React.createElement(
+						"a",
 						{
-							confirmText: "Download Now",
-							cancelText: "Cancel",
-							onConfirm: () => {
-								require("request").get(
-									"https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js",
-									async (error, response, body) => {
-										if (error)
-											return require("electron").shell.openExternal(
-												"https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js"
-											);
-										await new Promise((r) =>
-											require("fs").writeFile(
-												require("path").join(BdApi.Plugins.folder, "0PluginLibrary.plugin.js"),
-												body,
-												r
-											)
-										);
-									}
-								);
-							},
-						}
-					);
-				}
-				start() {}
-				stop() {}
-		  }
-		: (([Plugin, Api]) => {
-				const plugin = (Plugin, Library) => {
-					const { Patcher, WebpackModules, DiscordModules } = Library;
-					const { React } = DiscordModules;
+							title: mention,
+							href: `https://www.reddit.com/${mention}`,
+							rel: "noreferrer noopener",
+							target: "_blank",
+							role: "button",
+							tabindex: 0,
+						},
+						mention
+					)
+				);
+			}
+		}
 
-					const regex = /(?<!\w)\/?[ur]\/[\w\d-]{2,21}/g;
-
-					return class RedditMentions extends Plugin {
-						onStart() {
-							const parser = WebpackModules.getByProps("parse", "parseTopic");
-
-							Patcher.after(parser, "parse", (_, args, res) => this.inject(args, res));
-						}
-
-						onStop() {
-							Patcher.unpatchAll();
-						}
-
-						inject(args, res) {
-							const rendered = [];
-
-							for (const el of res) {
-								if (typeof el !== "string") {
-									if (["u", "em", "strong"].includes(el.type)) {
-										el.props.children = this.inject({}, el.props.children);
-									}
-
-									if (el.type.name === "StringPart") {
-										el.props.parts = this.inject({}, el.props.parts);
-									}
-
-									rendered.push(el);
-									continue;
-								}
-
-								if (!regex.test(el)) {
-									rendered.push(el);
-									continue;
-								}
-
-								const mentions = el.split(/(\/?[ur]\/[\w\d-]{2,21})/);
-
-								for (const mention of mentions) {
-									if (!regex.test(mention)) {
-										rendered.push(mention);
-										continue;
-									}
-
-									const entity = mention.match(/\/?([ur]\/[\w\d-]{2,21})/)[1];
-
-									rendered.push(
-										React.createElement(
-											"a",
-											{
-												title: entity,
-												rel: "noreferrer noopener",
-												href: `https://reddit.com/${entity}`,
-												role: "button",
-												target: "_blank",
-											},
-											mention
-										)
-									);
-								}
-							}
-
-							return rendered;
-						}
-					};
-				};
-				return plugin(Plugin, Api);
-		  })(global.ZeresPluginLibrary.buildPlugin(config));
-})();
-/*@end@*/
+		return parsed;
+	},
+});
