@@ -3,11 +3,11 @@
  * @author Bread
  * @authorId 304260051915374603
  * @description Renders `r/` and `u/` mentions as hyperlinks as you would see on Reddit.
- * @version 1.0.4
+ * @version 1.0.5
  * @website https://github.com/xiBread/bd-contributions
  */
 
-const SUB_OR_USER_RX = /\b\/?(?:r\/([a-zA-Z\d]\w{2,20})|u\/([\w-]{3,20}))/g;
+const SUB_OR_USER_RX = /(^|\s)(?:\/?r\/([a-zA-Z\d]\w{2,20})|\/?u\/([\w-]{3,20}))/g;
 
 module.exports = () => ({
 	start() {
@@ -40,27 +40,28 @@ module.exports = () => ({
 				continue;
 			}
 
-			const mentions = element.match(SUB_OR_USER_RX);
-			if (!mentions) {
-				parsed.push(element);
-				continue;
+			let idx = 0
+			while ((myArray = SUB_OR_USER_RX.exec(element)) !== null) {
+				if(myArray['index'] > idx) {
+					parsed.push(element.substring(idx, myArray['index'])+myArray[1])
+				}
+				let match = myArray[0].trim()
+				parsed.push(BdApi.React.createElement(
+					"a",
+					{
+						title: match,
+						href: `https://www.reddit.com/${match}`,
+						rel: "noreferrer noopener",
+						target: "_blank",
+						role: "button",
+						tabindex: 0,
+					},
+					match
+				))
+				idx = myArray['index']+myArray[0].length
 			}
-
-			for (const mention of mentions) {
-				parsed.push(
-					BdApi.React.createElement(
-						"a",
-						{
-							title: mention,
-							href: `https://www.reddit.com/${mention}`,
-							rel: "noreferrer noopener",
-							target: "_blank",
-							role: "button",
-							tabindex: 0,
-						},
-						mention
-					)
-				);
+			if(idx == 0) {
+				parsed.push(element);
 			}
 		}
 
